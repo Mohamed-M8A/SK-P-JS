@@ -9,16 +9,6 @@ function formatPrice(num) {
     maximumFractionDigits: 2
   });
 }
-
-// ===================================================
-// ✅ تغيير نصوص الأزرار
-// ===================================================
-const buyBtn = document.querySelector(".buy-button");
-if (buyBtn) buyBtn.textContent = "اطلب الآن";
-
-const cartBtn = document.querySelector(".add-to-cart");
-if (cartBtn) cartBtn.textContent = "أضف للعربة";
-
 // ===================================================
 // ✅ تنسيق مدة الشحن
 // ===================================================
