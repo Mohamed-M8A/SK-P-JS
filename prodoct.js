@@ -22,6 +22,19 @@ if (shippingTime) {
 }
 
 // ===================================================
+// ✅ تنسيق تكلفة الشحن
+// ===================================================
+const shippingFee = document.querySelector(".shipping-fee .value");
+if (shippingFee) {
+  const text = shippingFee.innerText.trim();
+  const match = text.match(/[\d.,\-–]+/);
+  if (match) {
+    const formatted = formatPrice(match[0]);
+    shippingFee.innerText = `${formatted} ${getCurrencySymbol()}`;
+  }
+}
+
+// ===================================================
 // ✅ تلوين تكلفة الشحن
 // ===================================================
 const shippingBox = document.querySelector(".shipping-fee .value");
@@ -84,17 +97,4 @@ const currencySymbols = {
 function getCurrencySymbol() {
   const country = localStorage.getItem("Cntry") || "SA";
   return currencySymbols[country] || "ر.س";
-}
-
-// ===================================================
-// ✅ تنسيق تكلفة الشحن
-// ===================================================
-const shippingFee = document.querySelector(".shipping-fee .value");
-if (shippingFee) {
-  const text = shippingFee.innerText.trim();
-  const match = text.match(/[\d.,\-–]+/);
-  if (match) {
-    const formatted = formatPrice(match[0]);
-    shippingFee.innerText = `${formatted} ${getCurrencySymbol()}`;
-  }
 }
