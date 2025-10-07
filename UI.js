@@ -31,6 +31,15 @@ function renderStarsFromValue() {
 // ✅ استدعاء الدالة
 renderStarsFromValue();
 
+// ===================================================
+// ✅ عرض عدد التقييمات
+// ===================================================
+const ratingCount = document.getElementById("goToReviews");
+if (ratingCount) {
+  const count = ratingCount.getAttribute("data-count") || "0";
+  ratingCount.textContent = `${count} تقييمات`;
+}
+
 // ==============================
 // ✅ التبويبات الذكية
 // ==============================
