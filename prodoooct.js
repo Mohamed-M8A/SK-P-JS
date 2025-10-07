@@ -20,15 +20,6 @@ const cartBtn = document.querySelector(".add-to-cart");
 if (cartBtn) cartBtn.textContent = "أضف للعربة";
 
 // ===================================================
-// ✅ عرض عدد التقييمات
-// ===================================================
-const ratingCount = document.getElementById("goToReviews");
-if (ratingCount) {
-  const count = ratingCount.getAttribute("data-count") || "0";
-  ratingCount.textContent = `${count} تقييمات`;
-}
-
-// ===================================================
 // ✅ تنسيق مدة الشحن
 // ===================================================
 const shippingTime = document.querySelector(".shipping-time .value");
