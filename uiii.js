@@ -110,6 +110,22 @@ if (buyBtn) buyBtn.textContent = "اطلب الآن";
 const cartBtn = document.querySelector(".add-to-cart");
 if (cartBtn) cartBtn.textContent = "أضف للعربة";
 
+const textMap = {
+  "الوصف": "التفاصيل",
+  "المميزات": "المزايا",
+  "المواصفات": "الخصائص الفنية",
+  "الرسم البياني للسعر": "تحليل الأسعار",
+  "تقييم العملاء": "آراء المستخدمين",
+  "فيديو": "مشاهدة الفيديو"
+};
+
+document.querySelectorAll(".tab-buttons button").forEach(btn => {
+  const oldText = btn.textContent.trim();
+  if (textMap[oldText]) {
+    btn.textContent = textMap[oldText];
+  }
+});
+
 // ==============================
 // ✅ إضافة نجوم التقييم
 // ==============================
