@@ -172,7 +172,8 @@ if (ratingCount) {
 
 let enableInitialScroll = false; 
 
-function showTab(id, btn) {
+function showTab(id, btn, forceScroll = false) {
+  // إخفاء كل التابات وإلغاء التفعيل من الأزرار
   document.querySelectorAll('[id^="tab"]').forEach(t => t.style.display = 'none');
   document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
 
@@ -183,8 +184,9 @@ function showTab(id, btn) {
     const targetTop = target.getBoundingClientRect().top + window.scrollY;
     const stickyHeight = document.querySelector('.tab-buttons')?.offsetHeight || 0;
 
+    // تنفيذ الانزلاق فقط عند السماح أو الطلب الإجباري
     setTimeout(() => {
-      if (enableInitialScroll) { 
+      if (enableInitialScroll || forceScroll) {
         window.scrollTo({
           top: targetTop - stickyHeight - 10,
           behavior: 'smooth'
@@ -196,6 +198,7 @@ function showTab(id, btn) {
   if (btn) btn.classList.add('active');
 }
 
+// ✅ فحص التابات وتفعيل أول تبويب عند الجاهزية
 let tabCheck = setInterval(() => {
   const firstBtn = document.querySelector('.tab-buttons button');
   const firstTab = document.getElementById('tab1');
@@ -220,28 +223,6 @@ setTimeout(() => clearInterval(tabCheck), 5000);
 // ✅ التوجيه لتاب التقييمات رقم (5)
 // ==================================
 
-function showTab(id, btn) {
-  document.querySelectorAll('[id^="tab"]').forEach(t => t.style.display = 'none');
-  document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
-
-  const target = document.getElementById(id);
-  if (target) {
-    target.style.display = 'block';
-
-    const targetTop = target.getBoundingClientRect().top + window.scrollY;
-    const stickyHeight = document.querySelector('.tab-buttons')?.offsetHeight || 0;
-
-    setTimeout(() => {
-      window.scrollTo({
-        top: targetTop - stickyHeight - 10,
-        behavior: 'smooth'
-      });
-    }, 100);
-  }
-
-  if (btn) btn.classList.add('active');
-}
-
 const goToReviewsBtn = document.getElementById("goToReviews");
 if (goToReviewsBtn) {
   goToReviewsBtn.addEventListener("click", function (e) {
@@ -253,7 +234,7 @@ if (goToReviewsBtn) {
     );
 
     if (targetButton) {
-      showTab('tab5', targetButton);
+      showTab('tab5', targetButton, true);
 
       setTimeout(() => {
         const reviewsSection = document.getElementById('tab5');
@@ -264,6 +245,27 @@ if (goToReviewsBtn) {
     }
   });
 }
+
+// ==================================
+// 💫 حل ترقيعي للانزلاق المبدئي
+// ==================================
+window.addEventListener("load", () => {
+  // تفعيل الانزلاق المبدئي مؤقتًا
+  enableInitialScroll = true;
+
+  // تأخير بسيط لضمان استقرار الصفحة
+  setTimeout(() => {
+    const firstBtn = document.querySelector('.tab-buttons button');
+    const firstTab = document.getElementById('tab1');
+
+    if (firstBtn && firstTab) {
+      showTab('tab1', firstBtn, true);
+    }
+
+    // تعطيل الانزلاق بعد أول مرة
+    enableInitialScroll = false;
+  }, 500);
+});
 
 // ==============================
 // ✅ إضافة صور افتراضية للعملاء 
