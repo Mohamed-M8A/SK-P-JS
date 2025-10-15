@@ -1,8 +1,6 @@
 // ==============================
 //  ✅ الجاليري (الصور + السلايدر + المودال)
 // ==============================
-
-document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('.main-image-container');
   const thumbnails = [...document.querySelectorAll('.thumbnail-container img')];
   const thumbContainer = document.querySelector('.thumbnail-container');
@@ -99,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     modalImage.src = thumbnails[currentIndex].src;
     applyImageStyle(modalImage);
   };
-});
 
 // ===================================================
 // ✅ تغيير نصوص الأزرار
@@ -172,7 +169,6 @@ if (ratingCount) {
 // ==============================
 // ✅ التبويبات الذكية
 // ==============================
-document.addEventListener("DOMContentLoaded", () => {
 
 let enableInitialScroll = false; 
 
@@ -268,7 +264,7 @@ if (goToReviewsBtn) {
     }
   });
 }
-});
+
 // ==============================
 // ✅ إضافة صور افتراضية للعملاء 
 // ==============================
