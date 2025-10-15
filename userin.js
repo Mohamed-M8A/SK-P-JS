@@ -184,7 +184,7 @@ function showTab(id, btn, forceScroll = false) {
     const targetTop = target.getBoundingClientRect().top + window.scrollY;
     const stickyHeight = document.querySelector('.tab-buttons')?.offsetHeight || 0;
 
-    // تنفيذ الانزلاق فقط عند السماح أو الطلب الإجباري
+    // ✅ تنفيذ الانزلاق فقط في الحالات المطلوبة (وليس عند التحميل المبدئي)
     setTimeout(() => {
       if (enableInitialScroll || forceScroll) {
         window.scrollTo({
@@ -204,12 +204,13 @@ let tabCheck = setInterval(() => {
   const firstTab = document.getElementById('tab1');
 
   if (firstBtn && firstTab) {
+    // ✅ هنا بنعرض التاب الأول فقط بدون أي انزلاق
     showTab('tab1', firstBtn);
 
     document.querySelectorAll('.tab-buttons button').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('onclick')?.match(/'(.*?)'/)?.[1];
-        if (id) showTab(id, btn);
+        if (id) showTab(id, btn, true); // الانزلاق هنا شغال عادي عند الضغط
       });
     });
 
@@ -234,7 +235,7 @@ if (goToReviewsBtn) {
     );
 
     if (targetButton) {
-      showTab('tab5', targetButton, true);
+      showTab('tab5', targetButton, true); // انزلاق هنا شغال عادي
 
       setTimeout(() => {
         const reviewsSection = document.getElementById('tab5');
@@ -245,27 +246,6 @@ if (goToReviewsBtn) {
     }
   });
 }
-
-// ==================================
-// 💫 حل ترقيعي للانزلاق المبدئي
-// ==================================
-window.addEventListener("load", () => {
-  // تفعيل الانزلاق المبدئي مؤقتًا
-  enableInitialScroll = true;
-
-  // تأخير بسيط لضمان استقرار الصفحة
-  setTimeout(() => {
-    const firstBtn = document.querySelector('.tab-buttons button');
-    const firstTab = document.getElementById('tab1');
-
-    if (firstBtn && firstTab) {
-      showTab('tab1', firstBtn, true);
-    }
-
-    // تعطيل الانزلاق بعد أول مرة
-    enableInitialScroll = false;
-  }, 500);
-});
 
 // ==============================
 // ✅ إضافة صور افتراضية للعملاء 
