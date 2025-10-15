@@ -110,6 +110,7 @@ if (buyBtn) buyBtn.textContent = "اطلب الآن";
 const cartBtn = document.querySelector(".add-to-cart");
 if (cartBtn) cartBtn.textContent = "أضف للعربة";
 
+// ✅ تغيير نصوص التابات
 const textMap = {
   "الوصف": "التفاصيل",
   "المميزات": "المزايا",
@@ -171,6 +172,7 @@ if (ratingCount) {
 // ==============================
 // ✅ التبويبات الذكية
 // ==============================
+document.addEventListener("DOMContentLoaded", () => {
 
 let enableInitialScroll = false; 
 
@@ -266,7 +268,7 @@ if (goToReviewsBtn) {
     }
   });
 }
-
+});
 // ==============================
 // ✅ إضافة صور افتراضية للعملاء 
 // ==============================
