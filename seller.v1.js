@@ -1,7 +1,7 @@
-// ================================
-// ✅ الجزء الأول: كود صفحة المنتج
-// ✅ إظهار شريط البائع ديناميكيًا
-// ================================
+/* ================================
+   ✅ الجزء الأول: كود صفحة المنتج
+   ✅ إظهار شريط البائع ديناميكيًا (مع إصلاح مشكلة أول منشور)
+   ================================ */
 async function loadSellerBar() {
   const sellerBarContainer = document.getElementById("seller-bar");
   if (!sellerBarContainer) return;
@@ -20,42 +20,66 @@ async function loadSellerBar() {
   try {
     const res = await fetch(feedUrl);
     const data = await res.json();
-    const entry = data.feed.entry?.[0];
-    if (!entry) {
-      sellerBarContainer.innerHTML = "<p>⚠ لم يتم العثور على بيانات البائع.</p>";
+    const entries = data.feed.entry || [];
+
+    if (!entries.length) {
+      sellerBarContainer.innerHTML = "<p>⚠️ لم يتم العثور على بيانات البائع.</p>";
       return;
     }
 
-    // ✅ استخراج شريط البائع
+    // ✅ البحث عن أول منشور يحتوي على عنصر .bar
+    let storeEntry = null;
     const parser = new DOMParser();
-    const doc = parser.parseFromString(entry.content.$t, "text/html");
-    const sellerBar = doc.querySelector(".bar");
+
+    for (const entry of entries) {
+      const doc = parser.parseFromString(entry.content.$t, "text/html");
+      if (doc.querySelector(".bar")) {
+        storeEntry = entry;
+        break; // أول منشور فعلاً فيه bar
+      }
+    }
+
+    if (!storeEntry) {
+      sellerBarContainer.innerHTML = "<p>⚠️ لم يتم العثور على شريط البائع في أي منشور.</p>";
+      return;
+    }
+
+    // ✅ استخراج شريط البائع من المنشور الصحيح
+    const storeDoc = parser.parseFromString(storeEntry.content.$t, "text/html");
+    const sellerBar = storeDoc.querySelector(".bar");
 
     if (sellerBar) {
       sellerBarContainer.innerHTML = sellerBar.outerHTML;
 
-      // ✅ زر "اكتشف المتجر"
-      const sellerLink = (entry.link || []).find(l => l.rel === "alternate")?.href || "#";
+      // ✅ إضافة زر "اكتشف المتجر"
+      const sellerLink = (storeEntry.link || []).find(l => l.rel === "alternate")?.href || "#";
       let buttons = sellerBarContainer.querySelector(".buttons");
+
       if (!buttons) {
         buttons = document.createElement("div");
         buttons.className = "buttons";
         sellerBarContainer.querySelector(".bar").appendChild(buttons);
       }
+
       buttons.innerHTML = `<a class="button" href="${sellerLink}">اكتشف المتجر</a>`;
+    } else {
+      sellerBarContainer.innerHTML = "<p>⚠️ لم يتم العثور على عنصر .bar في منشور البائع.</p>";
     }
+
   } catch (err) {
-    console.error("خطأ:", err);
-    sellerBarContainer.innerHTML = "<p>تعذر تحميل بيانات البائع.</p>";
+    console.error("❌ خطأ في تحميل بيانات البائع:", err);
+    sellerBarContainer.innerHTML = "<p>⚠️ تعذر تحميل بيانات البائع.</p>";
   }
 }
+
 loadSellerBar();
 
 
-// =====================================
-// ✅ الجزء الثاني: كود صفحة المتجر
-// ✅ عرض منتجات البائع ديناميكيًا
-// =====================================
+
+/* =====================================
+   ✅ الجزء الثاني: كود صفحة المتجر
+   ✅ عرض منتجات البائع ديناميكيًا
+   ===================================== */
 async function loadSellerProducts() {
   const container = document.getElementById("seller-products");
   const pagination = document.getElementById("pagination");
@@ -115,9 +139,10 @@ async function loadSellerProducts() {
 
     renderPage(1);
   } catch (err) {
-    console.error("خطأ في تحميل المنتجات:", err);
+    console.error("❌ خطأ في تحميل المنتجات:", err);
     loader.style.display = "none";
-    container.innerHTML = "<p>حدث خطأ أثناء تحميل المنتجات</p>";
+    container.innerHTML = "<p>⚠️ حدث خطأ أثناء تحميل المنتجات.</p>";
   }
 }
+
 loadSellerProducts();
