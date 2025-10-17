@@ -78,74 +78,72 @@ try {
     return;
   }
 
-  /* ===================================================
-     🚚 قسم الشحن + التوفر
-  =================================================== */
-  const shippingFeeEl = document.querySelector(".shipping-fee .value");
-  const shippingTimeEl = document.querySelector(".shipping-time .value");
-  const shippingStatusEl = document.querySelector(".country-shipping .value");
-  const shippingLabel = document.querySelector(".country-shipping .label");
-  const availabilityEl = document.querySelector(".product-availability .value");
+/* ===================================================
+   🚚 قسم الشحن + التوفر
+=================================================== */
+const shippingFeeEl = document.querySelector(".shipping-fee .value");
+const shippingTimeEl = document.querySelector(".shipping-time .value");
+const shippingStatusEl = document.querySelector(".country-shipping .value");
+const shippingLabel = document.querySelector(".country-shipping .label");
+const availabilityEl = document.querySelector(".product-availability .value");
 
-  // عنوان الشحن إلى
-  if (shippingLabel) shippingLabel.textContent = `الشحن إلى ${getCountryName()}:`;
+// عنوان الشحن إلى
+if (shippingLabel) shippingLabel.textContent = `الشحن إلى ${getCountryName()}:`;
 
-  const availabilityText = countryData["product-availability"]?.trim() || "";
-  const shippingStatusText = countryData["country-shipping"]?.trim() || "";
+// 🧠 استنتاج حالة الشحن والتوفر بناءً على بيانات المدة والرسوم
+const minDays = +countryData["shipping-min-days"] || 0;
+const maxDays = +countryData["shipping-max-days"] || 0;
+const hasShipping = minDays > 0 && maxDays > 0;
+const isAvailable = hasShipping && countryData["shipping-fee"] !== null;
 
-  // حالة التوفر
-  if (availabilityEl) {
-    availabilityEl.textContent = availabilityText || "-";
-    const unavailable = /غير متاح|غير متوفر/i.test(availabilityText);
-    availabilityEl.style.color = unavailable ? "#c62828" : "#2e7d32";
-    availabilityEl.style.fontWeight = "bold";
-  }
+// 🟢 نصوص الحالات
+const shippingStatusText = hasShipping ? "متاح" : "غير متاح";
+const availabilityText = isAvailable ? "متوفر" : "غير متوفر";
 
-  // حالة الشحن
-  if (shippingStatusEl) {
-    shippingStatusEl.textContent = shippingStatusText || "-";
-    const noShip = /غير متاح|لا يشحن/i.test(shippingStatusText);
-    shippingStatusEl.style.color = noShip ? "#c62828" : "#2e7d32";
-    shippingStatusEl.style.fontWeight = "bold";
-  }
+// 🎨 عرض حالة التوفر
+if (availabilityEl) {
+  availabilityEl.textContent = availabilityText;
+  availabilityEl.style.color = isAvailable ? "#2e7d32" : "#c62828";
+  availabilityEl.style.fontWeight = "bold";
+}
 
-  const unavailable =
-    /غير متاح|غير متوفر/i.test(availabilityText) ||
-    /غير متاح|لا يشحن/i.test(shippingStatusText);
+// 🎨 عرض حالة الشحن
+if (shippingStatusEl) {
+  shippingStatusEl.textContent = shippingStatusText;
+  shippingStatusEl.style.color = hasShipping ? "#2e7d32" : "#c62828";
+  shippingStatusEl.style.fontWeight = "bold";
+}
 
-  // تكلفة الشحن + المدة
-  if (unavailable) {
-    if (shippingFeeEl) shippingFeeEl.textContent = "-";
-    if (shippingTimeEl) shippingTimeEl.textContent = "-";
-  } else {
-    const fee = countryData["shipping-fee"];
-    if (shippingFeeEl) {
-      if (fee === 0) {
-        shippingFeeEl.textContent = "مجانا";
-        shippingFeeEl.style.color = "#2e7d32";
-        shippingFeeEl.style.fontWeight = "bold";
-      } else if (fee) {
-        shippingFeeEl.textContent = `${formatPrice(fee)} ${getCurrencySymbol()}`;
-      } else {
-        shippingFeeEl.textContent = "-";
-      }
+// 🚫 لو غير متاح → نخفي التفاصيل
+if (!hasShipping || !isAvailable) {
+  if (shippingFeeEl) shippingFeeEl.textContent = "-";
+  if (shippingTimeEl) shippingTimeEl.textContent = "-";
+} else {
+  const fee = countryData["shipping-fee"];
+  if (shippingFeeEl) {
+    if (fee === 0) {
+      shippingFeeEl.textContent = "مجانا";
+      shippingFeeEl.style.color = "#2e7d32";
+      shippingFeeEl.style.fontWeight = "bold";
+    } else if (fee) {
+      shippingFeeEl.textContent = `${formatPrice(fee)} ${getCurrencySymbol()}`;
+    } else {
+      shippingFeeEl.textContent = "-";
     }
-
-    if (shippingTimeEl) {
-  const min = countryData["shipping-min-days"];
-  const max = countryData["shipping-max-days"];
-
-  if (min && max) {
-    shippingTimeEl.textContent = `${min}-${max} أيام`;
-  } else if (min && !max) {
-    shippingTimeEl.textContent = `${min} أيام`;
-  } else if (!min && max) {
-    shippingTimeEl.textContent = `${max} أيام`;
-  } else {
-    shippingTimeEl.textContent = "-";
   }
- } 
-} 
+
+  if (shippingTimeEl) {
+    if (minDays && maxDays) {
+      shippingTimeEl.textContent = `${minDays}-${maxDays} أيام`;
+    } else if (minDays && !maxDays) {
+      shippingTimeEl.textContent = `${minDays} أيام`;
+    } else if (!minDays && maxDays) {
+      shippingTimeEl.textContent = `${maxDays} أيام`;
+    } else {
+      shippingTimeEl.textContent = "-";
+    }
+  }
+}
 
   /* ===================================================
      💰 الأسعار + الخصم + التوفير
