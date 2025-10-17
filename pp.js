@@ -1,7 +1,7 @@
 /* ===================================================
    🚚 دوال الشحن + دوال المساعدة
 =================================================== */
-
+document.addEventListener("DOMContentLoaded", () => {
 /** 🧭 إرجاع اسم الدولة بناءً على localStorage */
 function getCountryName() {
   const country = localStorage.getItem("Cntry");
@@ -386,3 +386,4 @@ if (discountedEl && validDiscounted) {
   } catch (err) {
     console.error("❌ خطأ أثناء تحميل بيانات الرسم البياني:", err);
   }
+});
