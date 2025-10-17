@@ -125,17 +125,13 @@ document.querySelectorAll(".tab-buttons button").forEach(btn => {
 });
 
 // ==============================
-// ✅ إضافة نجوم التقييم
+// ✅ إضافة نجوم التقييم (تحديث شامل)
 // ==============================
-function renderStarsFromValue() {
-  const ratingValueEl = document.getElementById("ratingValue");
-  const starsContainer = document.getElementById("stars");
-  if (!ratingValueEl || !starsContainer) return;
-
-  let rating = parseFloat(ratingValueEl.textContent);
-  let fullStars = Math.floor(rating);
-  let hasHalf = (rating % 1 !== 0) ? 1 : 0;
-  let emptyStars = 5 - fullStars - hasHalf;
+function renderStars(container) {
+  const rating = parseFloat(container.getAttribute("data-rating")) || 0;
+  const fullStars = Math.floor(rating);
+  const hasHalf = rating % 1 !== 0 ? 1 : 0;
+  const emptyStars = 5 - fullStars - hasHalf;
 
   let starsHTML = "";
 
@@ -151,11 +147,19 @@ function renderStarsFromValue() {
     starsHTML += `<span class="star empty">★</span>`;
   }
 
-  starsContainer.innerHTML = starsHTML;
+  container.innerHTML = starsHTML;
 }
 
-// ✅ استدعاء الدالة
-renderStarsFromValue();
+// ✅ تطبيق الدالة على كل العناصر اللي فيها data-rating
+document.querySelectorAll(".stars-group[data-rating]").forEach(renderStars);
+
+// ✅ دعم التقييم العام اللي فيه قيمة رقمية (زي 4.5 فوق المنتج)
+const ratingValueEl = document.getElementById("ratingValue");
+if (ratingValueEl) {
+  const starsContainer = document.getElementById("stars");
+  starsContainer.setAttribute("data-rating", ratingValueEl.textContent);
+  renderStars(starsContainer);
+}
 
 // ===================================================
 // ✅ عرض عدد التقييمات
@@ -165,7 +169,6 @@ if (ratingCount) {
   const count = ratingCount.getAttribute("data-count") || "0";
   ratingCount.textContent = `${count} تقييمات`;
 }
-
 // ==============================
 // ✅ التبويبات الذكية
 // ==============================
