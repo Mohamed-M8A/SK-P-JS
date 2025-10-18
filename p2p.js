@@ -93,8 +93,18 @@ if (shippingLabel) shippingLabel.textContent = `الشحن إلى ${getCountryNa
 // 🧠 استنتاج حالة الشحن والتوفر بناءً على بيانات المدة والرسوم
 const minDays = +countryData["shipping-min-days"] || 0;
 const maxDays = +countryData["shipping-max-days"] || 0;
-const hasShipping = minDays > 0 && maxDays > 0;
-const isAvailable = hasShipping && countryData["shipping-fee"] !== null;
+// 🧭 تحقق من حالة الشحن للدولة الحالية
+const hasShipping = (+countryData["shipping-min-days"] || 0) > 0 || (+countryData["shipping-max-days"] || 0) > 0;
+
+// 🌍 التحقق العام من توفر المنتج على الأقل في دولة واحدة بناءً على الأيام فقط
+const isGloballyAvailable = Object.values(data.countries).some(c => {
+  const min = +c["shipping-min-days"] || 0;
+  const max = +c["shipping-max-days"] || 0;
+  return min > 0 || max > 0;
+});
+
+// ⚙️ حالة التوفر تعتمد على التوفر العام (مش لازم الدولة الحالية يكون فيها شحن)
+const isAvailable = isGloballyAvailable;
 
 // 🟢 نصوص الحالات
 const shippingStatusText = hasShipping ? "متاح" : "غير متاح";
