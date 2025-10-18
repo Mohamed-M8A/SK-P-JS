@@ -253,10 +253,10 @@ if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
     // ✅ لو مفيش بيانات سعر → إخفاء القسم والخروج
     if (!priceHistory.length) {
   const chartCanvas = document.getElementById("priceChart");
-  if (chartCanvas) {
-    chartCanvas.parentElement.style.display = "none";
-  }
-} else {
+  if (chartCanvas) chartCanvas.parentElement.style.display = "none";
+  return;
+}
+
 
     // ✅ دمج الأسعار في نفس التاريخ (حساب المتوسط)
     const merged = {};
@@ -395,5 +395,4 @@ if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
   } catch (err) {
     console.error("❌ خطأ أثناء تحميل بيانات الرسم البياني:", err);
   }
-}
 });
