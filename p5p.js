@@ -391,7 +391,7 @@ if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
         }
       });
     }
-   }
+   
   } catch (err) {
     console.error("❌ خطأ أثناء تحميل بيانات الرسم البياني:", err);
   }
