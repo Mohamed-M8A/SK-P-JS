@@ -1,4 +1,26 @@
 /* ===================================================
+   🧩 خريطة العملات + أسماء الدول
+=================================================== */
+const countryInfo = {
+  SA: { symbol: "ر.س", name: "السعودية" },
+  AE: { symbol: "د.إ", name: "الإمارات" },
+  OM: { symbol: "ر.ع", name: "عُمان" },
+  MA: { symbol: "د.م", name: "المغرب" },
+  DZ: { symbol: "د.ج", name: "الجزائر" },
+  TN: { symbol: "د.ت", name: "تونس" }
+};
+
+/* 💱 تحويل تقريبي إلى الريال السعودي */
+const exchangeRates = {
+  SA: 1,
+  AE: 1.02,
+  OM: 9.74,
+  MA: 0.38,
+  DZ: 0.028,
+  TN: 1.21
+};
+
+/* ===================================================
    🚚 دوال الشحن + دوال المساعدة
 =================================================== */
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,28 +42,6 @@ function formatPrice(num) {
   if (isNaN(n)) return "";
   return n.toLocaleString("en-US", { minimumFractionDigits: 2 });
 }
-
-/* ===================================================
-   🧩 خريطة العملات + أسماء الدول
-=================================================== */
-const countryInfo = {
-  SA: { symbol: "ر.س", name: "السعودية" },
-  AE: { symbol: "د.إ", name: "الإمارات" },
-  OM: { symbol: "ر.ع", name: "عُمان" },
-  MA: { symbol: "د.م", name: "المغرب" },
-  DZ: { symbol: "د.ج", name: "الجزائر" },
-  TN: { symbol: "د.ت", name: "تونس" }
-};
-
-/* 💱 تحويل تقريبي إلى الريال السعودي */
-const exchangeRates = {
-  SA: 1,
-  AE: 1.02,
-  OM: 9.74,
-  MA: 0.38,
-  DZ: 0.028,
-  TN: 1.21
-};
 
 /* ===================================================
    🌍 تنفيذ عند تحميل الصفحة
@@ -170,8 +170,7 @@ if (!hasShipping || !isAvailable) {
   const validOriginal = parseFloat(original) || null;
   const validDiscounted = parseFloat(discounted) || null;
 
-  // لو مفيش أسعار → نوقف عند هذا القسم فقط
-  if (!validOriginal && !validDiscounted) return;
+  if (validOriginal || validDiscounted) {
 
   const finalOriginal = validOriginal || validDiscounted;
   const finalDiscounted =
@@ -227,19 +226,20 @@ if (discountedEl && validDiscounted) {
         savingEl.title = `الفرق بين السعر القديم (${formatPrice(finalOriginal)}) والجديد (${formatPrice(finalDiscounted)})`;
 
         // 🔥 إضافة النار لو التوفير كبير
-        if (diffInSAR >= 500) {
-          const fireGif = document.createElement("img");
-          fireGif.src = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
-          fireGif.alt = "🔥";
-          fireGif.style.cssText = `
-            width: 25px; height: 25px; vertical-align: middle; margin: 0; display: inline;
-          `;
-          savingEl.querySelector(".save-amount").appendChild(fireGif);
-        }
+        const saveAmount = savingEl.querySelector(".save-amount");
+if (diffInSAR >= 500 && !saveAmount.querySelector("img")) {
+  const fireGif = document.createElement("img");
+  fireGif.src = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj5J9EL4a9cV3VWmcK1ZYD6OYEB-1APv9gggocpaa7jAJXdgvX8Q7QiaAZC9NxcN25f8MTRSYD6SKwT1LSjL0SB1ovJH1SSkRmqH2y3f1NzWGkC0BE-gpj5bTc1OKi3Rfzh44sAAJSvOS5uq7Ut9ETN-V9LgKim0dkmEVmqUWa-2ZGA7FvMAYrVaJgn/w199-h200/fire%20(1).gif";
+  fireGif.alt = "🔥";
+  fireGif.style.cssText = `
+    width: 25px; height: 25px; vertical-align: middle; margin: 0; display: inline;
+  `;
+  saveAmount.appendChild(fireGif);
       }
+     }
     }
-  }
-
+   }
+  }    
 // ==============================
 // ✅ الرسم البياني 
 // ==============================
@@ -266,9 +266,9 @@ if (discountedEl && validDiscounted) {
     });
 
     // ✅ إنشاء مصفوفة نهائية بالتاريخ والمتوسط لكل يوم
-    const finalData = Object.keys(merged).map(date => ({
-      date,
-      price: +(merged[date].total / merged[date].count).toFixed(2)
+    const finalData = Object.entries(merged).map(([date, { total, count }]) => ({
+    date,
+    price: +(total / count).toFixed(2)
     }));
 
     // ✅ استخراج القيم (الأسعار + التواريخ)
