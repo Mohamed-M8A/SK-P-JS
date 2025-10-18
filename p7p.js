@@ -48,10 +48,26 @@ function formatPrice(num) {
 =================================================== */
 
   const jsonScript = document.getElementById("product-data");
-  if (!jsonScript) {
-    console.warn("⚠️ لا يوجد عنصر product-data في الصفحة");
-    return;
+  let data = { countries: {} };
+
+if (!jsonScript) {
+  console.warn("⚠️ لا يوجد عنصر product-data في الصفحة — سيتم المتابعة بدون بيانات المنتج");
+} else {
+  try {
+    // 🧹 تنظيف JSON من المفاتيح اللي مالهاش قيمة أو فواصل غلط
+    let jsonText = jsonScript.textContent
+      .replace(/,\s*}/g, "}")
+      .replace(/,\s*]/g, "]")
+      .replace(/:\s*,/g, ': null,')
+      .replace(/:\s*}/g, ': null}')
+      .replace(/:\s*]/g, ': null]');
+
+    data = JSON.parse(jsonText);
+  } catch {
+    console.warn("⚠️ خطأ في JSON داخل product-data — سيتم التجاهل والمتابعة");
+    data = { countries: {} };
   }
+}
 
   let data;
 try {
