@@ -102,10 +102,10 @@
 // ✅ تغيير نصوص الأزرار
 // ===================================================
 const buyBtn = document.querySelector(".buy-button");
-if (buyBtn) buyBtn.textContent = "اشتري الآن🔥";
+if (buyBtn) buyBtn.textContent = "اطلب الآن";
 
 const cartBtn = document.querySelector(".add-to-cart");
-if (cartBtn) cartBtn.textContent = "+ أضف للعربة";
+if (cartBtn) cartBtn.textContent = "أضف للسلة";
 
 // ✅ تغيير نصوص التابات
 const textMap = {
