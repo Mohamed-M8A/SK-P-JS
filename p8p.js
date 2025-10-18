@@ -46,9 +46,8 @@ function formatPrice(num) {
 /* ===================================================
    🌍 تنفيذ عند تحميل الصفحة
 =================================================== */
-
-  const jsonScript = document.getElementById("product-data");
-  let data = { countries: {} };
+const jsonScript = document.getElementById("product-data");
+let data = { countries: {} }; // تعريف مبدئي يمنع توقف الكود
 
 if (!jsonScript) {
   console.warn("⚠️ لا يوجد عنصر product-data في الصفحة — سيتم المتابعة بدون بيانات المنتج");
@@ -69,30 +68,13 @@ if (!jsonScript) {
   }
 }
 
-  let data;
-try {
-  // 🧹 تنظيف JSON من المفاتيح اللي مالهاش قيمة أو فواصل غلط
-  let jsonText = jsonScript.textContent
-    .replace(/,\s*}/g, "}")
-    .replace(/,\s*]/g, "]")
-    .replace(/:\s*,/g, ': null,')
-    .replace(/:\s*}/g, ': null}')
-    .replace(/:\s*]/g, ': null]');
+const countryCode = localStorage.getItem("Cntry");
+const countryData = data.countries?.[countryCode];
 
-  data = JSON.parse(jsonText);
-} catch {
-  console.warn("⚠️ خطأ في JSON داخل product-data — سيتم التجاهل والمتابعة");
-  data = { countries: {} }; // كائن فاضي يمنع توقف الكود
+if (!countryData) {
+  console.warn(`⚠️ لا توجد بيانات لهذه الدولة (${countryCode})`);
+  return;
 }
-
-
-  const countryCode = localStorage.getItem("Cntry");
-  const countryData = data.countries?.[countryCode];
-
-  if (!countryData) {
-    console.warn(`⚠️ لا توجد بيانات لهذه الدولة (${countryCode})`);
-    return;
-  }
 
 /* ===================================================
    🚚 قسم الشحن + التوفر
